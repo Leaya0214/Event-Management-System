@@ -1522,7 +1522,7 @@ class EventController extends Controller
 
             if($request->status == 1){
                 $message = "Dear Sir Your Booking is confirmed Booking ID-". $event->event->booking_id .". You Book for ".$event->type->type_name.". Your Event Date is ".date('d/m/Y',strtotime($event->date)).".";
-                send_sms($client_phone_number,$message);
+                // send_sms($client_phone_number,$message);
                 $master = EventMaster::where('id',$event->master_id)->update([
                 "master_status" => 1
                 ]);
@@ -1542,7 +1542,7 @@ class EventController extends Controller
                 $message_body = "Your Booking ID-".$event->event->booking_id." And Event Date-".date('d/m/Y',strtotime($event->date))." Photos & Video is ready for delivery. Please Collect it from our office. ".
                             "Please bring Pendrive/Hard Drive. After getting all Raw Photos please select photos for Editing. ".
                             "For any other query Contact with us : +88 0177171 1590 or +88 0174222 5584";
-                send_sms($client_phone_number,$message_body);
+                // send_sms($client_phone_number,$message_body);
             }
             if($request->status== 4){
                 $event->selection_date = date('d/m/Y');
@@ -1576,7 +1576,7 @@ class EventController extends Controller
 
                 $message_body ="Dear Sir,".
                             " Your Booking Id-".$event->event->booking_id." Event Date ". $event->date .", Event Venue  ".$event->venue ." Products are ready for delivery. Please Collect it from our office. For any other query Contact with us : +88 0177171 1590 or +88 0174222 5584";
-                send_sms($client_phone_number,$message_body);
+                // send_sms($client_phone_number,$message_body);
             }
 
             if($request->status== 6){

@@ -42,7 +42,7 @@ class EventController extends Controller
         }
         $shifts = EventShift::all();
         return view('BackEnd.webcontent.event.manageShift',['shifts' => $shifts]);
-        
+
     }
     public function shiftStore(Request $request){
         if (!check_access("shift.create")) {
@@ -51,7 +51,7 @@ class EventController extends Controller
         }
         $validator = Validator::make($request->all(),[
             'shift_name' => 'required',
-        
+
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -73,7 +73,7 @@ class EventController extends Controller
         }
         $validator = Validator::make($request->all(),[
             'shift_name' => 'required',
-        
+
         ]);
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -209,11 +209,11 @@ class EventController extends Controller
             return redirect()->route('admin.index');
         }
         $districts  =District::all();
-        // 
+        //
         return view('BackEnd.webcontent.event.district',compact('districts'));
     }
     public function storeDistrict(Request $request){
-     
+
         $validator = Validator::make($request->all(),[
             'district' => 'required',
         ]);
@@ -324,7 +324,7 @@ class EventController extends Controller
                                 ->leftJoin('package_category as c', 'c.id', '=', 'd.category_id')
                                 ->leftJoin('packages as pkg', 'pkg.id', '=', 'd.package_id')
                                 ->leftJoin('payments as pt', 'pt.event_id', '=', 'e.id');
-                        
+
             if($status && $status != "all" || $status == 0 ){
                 $event_info->where('d.status',$status)->orderByDesc('selection_date')->get();
             }
@@ -362,8 +362,8 @@ class EventController extends Controller
                 $event_info->where('d.date','<=',$to_date)->get();
             }
             $events = $event_info->orderByDesc('id')->get();
-                
-                $count = 0; 
+
+                $count = 0;
 
                 return DataTables::of($events)
                 ->addIndexColumn()
@@ -384,12 +384,12 @@ class EventController extends Controller
                         <strong>Client Name:</strong>' . $event->client->name . ' <br>
                         <strong>Phone Number:</strong> ' . $event->client->primary_no . ' <br>
                         <strong>Venue:</strong>' .$venueFormatted . '<br>';
-                    
+
                     return $booking_html;
                 })
                 ->addColumn('event_type', function ($event) {
                     $details = EventDetails::where('id',$event->d_id)->first();
-                    
+
                     // Render the nested table
                     $type_html = '<table class="table child-table">';
                     $type_html .= '<tbody>';
@@ -398,8 +398,8 @@ class EventController extends Controller
                         $type_html .= '</tr>';
                         $type_html .= '</tbody>';
                         $type_html .= '</table>';
-        
-            
+
+
                     return $type_html;
                 })
                 ->addColumn('event_date',function($event){
@@ -412,7 +412,7 @@ class EventController extends Controller
                         $event_date .= '</tr>';
                         $event_date .= '</tbody>';
                         $event_date .= '</table>';
-            
+
                     return $event_date;
                 })->addColumn('expense',function($event){
                 $addexpense = '';
@@ -428,11 +428,11 @@ class EventController extends Controller
                         </a>'.'</td>';
                     $view .= '</tr>';
                 // }
-                $view .= '</tbody>';  
-                $view .= '</table>';  
+                $view .= '</tbody>';
+                $view .= '</table>';
                 // }
                 return $view;
-    
+
                 })->addColumn('selection_date',function($event){
                     $detail = EventDetails::where('master_id',$event->id)->first();
                     // Render the nested table
@@ -449,7 +449,7 @@ class EventController extends Controller
                         $event_shift .= '</tr>';
                         $event_shift .= '</tbody>';
                         $event_shift .= '</table>';
-            
+
                     return $event_shift;
                 })
                 ->addColumn('event_time', function ($event) {
@@ -461,10 +461,10 @@ class EventController extends Controller
                         $event_time .= '<tr>';
                         $event_time .= '<td>' . $time . '</td>';
                         $event_time .= '</tr>';
-                    
+
                         $event_time .= '</tbody>';
                         $event_time .= '</table>';
-            
+
                     return $event_time;
                 })
                 ->addColumn('package', function ($event) {
@@ -475,10 +475,10 @@ class EventController extends Controller
                         $event_location .= '<tr>';
                         $event_location .= '<td>' . $details->category->category_name . '</td>';
                         $event_location .= '</tr>';
-                    
+
                         $event_location .= '</tbody>';
                         $event_location .= '</table>';
-            
+
                     return $event_location;
                 })
                 ->addColumn('package_name', function ($event) {
@@ -491,7 +491,7 @@ class EventController extends Controller
                         $event_location .= '</tr>';
                         $event_location .= '</tbody>';
                         $event_location .= '</table>';
-            
+
                     return $event_location;
                 })
                 ->addColumn('status', function($event){
@@ -502,64 +502,64 @@ class EventController extends Controller
                     $status .= '<tbody>';
                         $status .= '<tr>';
                         if($details->status == 0){
-                            $status .= '<td>' . '<a data-bs-toggle="modal" 
+                            $status .= '<td>' . '<a data-bs-toggle="modal"
                             data-bs-target=".status_modal-'.$details->id.'"
                             style="background-color: rgb(189 163 35); color:white; border-radius:5px;"
                             class="btn btn-xs mr-1">Pending</a>' . '</td>';
-                           
+
                         }
                         else if($details->status == 1){
-                            $status .= '<td>' . '<a data-bs-toggle="modal" 
+                            $status .= '<td>' . '<a data-bs-toggle="modal"
                             data-bs-target=".status_modal-'.$details->id.'"
                             style="background-color:#23bd5f; color:white; border-radius:5px;"
                             class="btn btn-xs mr-1">Active</a>'. '</td>';
                         }
                         else if($details->status == 2){
-                            $status .= '<td>' . '<a data-bs-toggle="modal" 
+                            $status .= '<td>' . '<a data-bs-toggle="modal"
                             data-bs-target=".status_modal-'.$details->id.'"
                             style="background-color:#bd2823; color:white; border-radius:5px;"
                             class="btn btn-xs btn-sm mr-1">Deactive</a>'. '</td>';
                         }
                         else if($details->status == 3){
-                            $status .= '<td>' . '<a data-bs-toggle="modal" 
+                            $status .= '<td>' . '<a data-bs-toggle="modal"
                             data-bs-target=".status_modal-'.$details->id.'"
                             style="background-color:#23b8bd; color:white; border-radius:5px;"
                             class="btn btn-xs  mr-1">Raw Ready For Delivery</a>'. '</td>';
                         }
                         else if($details->status == 4){
-                            $status .= '<td>' . '<a data-bs-toggle="modal" 
+                            $status .= '<td>' . '<a data-bs-toggle="modal"
                             data-bs-target=".status_modal-'.$details->id.'"
                             style="background-color: #235bbd; color:white; border-radius:5px;"
                             class="btn btn-xs  mr-1">Selection Given</a>'. '</td>';
                         }
                         else if($details->status == 5){
-                            $status .= '<td>' . '<a data-bs-toggle="modal" 
+                            $status .= '<td>' . '<a data-bs-toggle="modal"
                             data-bs-target=".status_modal-'.$details->id.'"
                             style="background-color: #5c23bd; color:white; border-radius:5px;"
                             class="btn btn-xs  mr-1">Final Ready</a>'. '</td>';
                         }
                         else if($details->status == 6){
-                            $status .= '<td>' . '<a data-bs-toggle="modal" 
+                            $status .= '<td>' . '<a data-bs-toggle="modal"
                             data-bs-target=".status_modal-'.$details->id.'"
                             style="background-color:#377c00; color:white; border-radius:5px;"
                             class="btn btn-xs  mr-1">Delivered</a>'. '</td>';
-        
+
                         }else if($details->status == 7){
-                            $status .= '<td>' . '<a data-bs-toggle="modal" 
+                            $status .= '<td>' . '<a data-bs-toggle="modal"
                             data-bs-target=".status_modal-'.$details->id.'"
                             style="background-color:#377c00; color:white; border-radius:5px;"
                             class="btn btn-xs  mr-1">Raw Delivered</a>'. '</td>';
-        
+
                         }else{
                             $status = '';
                         }
                         $status .= '</tr>';
-                    
+
                     $status .= '</tbody>';
                     $status .= '</table>';
                     }
                     return $status;
-                   
+
                 })
                 ->addColumn('payment_info', function($event){
                     $payment = PayMentModel::where('event_id',$event->id)->first();
@@ -577,24 +577,24 @@ class EventController extends Controller
                 ->addColumn('assign', function($event){
                     $buttons = '';
                     if (check_access("assign.photographer.other")) {
-                   
-                    $buttons = '<a data-bs-toggle="modal" 
+
+                    $buttons = '<a data-bs-toggle="modal"
                                 data-bs-target=".photographer-'.$event->id.'"
                                 style="background-color:#cd4715; color:white; border-radius:5px; margin-bottom:4px"
-                                class="btn btn-xs btn-sm mr-1">Photographer</a> 
+                                class="btn btn-xs btn-sm mr-1">Photographer</a>
                                 <br>
-                                <a  data-bs-toggle="modal" 
+                                <a  data-bs-toggle="modal"
                                 data-bs-target=".cinematographer-'.$event->id.'" style="background-color: #068b58; color:white; border-radius:5px;  margin-bottom:4px"
                                 class="btn btn-xs btn-sm mr-1">Cinematographer</a>
                                 <br>
-                                <a  data-bs-toggle="modal" 
+                                <a  data-bs-toggle="modal"
                                 data-bs-target=".photoeditor-'.$event->id.'" style="background-color: #0c4aa3; color:white; border-radius:5px;  margin-bottom:4px"
                                 class="btn btn-xs btn-sm mr-1">Photo Editor</a>
                                 <br>
-                                <a  data-bs-toggle="modal" 
+                                <a  data-bs-toggle="modal"
                                 data-bs-target=".cineeditor-'.$event->id.'" style="background-color: #830ca3; color:white; border-radius:5px;  margin-bottom:4px"
                                 class="btn btn-xs btn-sm mr-1">Cine Editor</a>';
-                    
+
                 }
                     return $buttons;
                 })
@@ -611,23 +611,23 @@ class EventController extends Controller
                     $edit = '';
                     $delete = '';
                     if (check_access("event.list")) {
-                    $view ='<a href=""  data-bs-toggle="modal" 
+                    $view ='<a href=""  data-bs-toggle="modal"
                                 data-bs-target=".view_modal-'.$event->id.'" style="padding:2px; margin-left:3px; color:white"
                                 class="btn btn-xs btn-info btn-sm mr-1">
                                 <svg  width="16" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                 </a>';
                     }
                     if (check_access("event.edit")) {
-        
+
                     $edit = '<a href="'.route('event.edit',$event->id).'" style="padding:2px;  margin-left:3px; "
                                     class="btn btn-xs btn-primary btn-sm mr-1">
                                     <svg width="16" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                 </a>';
                     }
-                    
-                
+
+
                     // if (check_access("event.delete")) {
-        
+
                     // $delete = '<a href="'.route('delete.event',$event->id).'"
                     //             onclick="return confirm("Are you sure you want to delete?");"
                     //             style="padding: 2px; margin-left:3px;" class="delete btn btn-xs btn-danger btn-sm mr-1"><svg
@@ -643,9 +643,9 @@ class EventController extends Controller
                     //         </svg></a>
                     //             ';
                     // }
-                    
+
                     if (check_access("event.delete")) {
-        
+
                     $delete = '<a onclick="deleteEvent(' .$event->id .')" data-id="' .$event->id .'"
                                 style="padding: 2px; margin-left:3px;" class="delete btn btn-xs btn-danger btn-sm mr-1"><svg
                                 width="16" height="14" viewBox="0 0 24 24" fill="none"
@@ -660,46 +660,46 @@ class EventController extends Controller
                             </svg></a>
                                 ';
                     }
-        
+
                     return $view.$edit.$delete;
-        
+
                 }) ->addColumn('experience',function($event){
                     $view = '';
                     $officeExperience = '';
-         
+
                     if (check_access("event.list")) {
                         $details = EventDetails::where('master_id',$event->id)->get();
                         $view = '<table class="table  child-table">';
                         $view .= '<tbody>';
                         foreach($details as $s_detail){
                             $view .= '<tr>';
-                            $view .='<td>'.'<a href=""  data-bs-toggle="modal" 
+                            $view .='<td>'.'<a href=""  data-bs-toggle="modal"
                                 data-bs-target=".officeExperience-'.$s_detail->id.'" style="padding:2px; margin-left:3px; margin-top:6px; color:white"
                                 class="btn btn-xs btn-primary btn-sm mr-1">
                                 Share Experience
                                 </a>'.'</td>';
-        
-                            $view .='<td>'.'<a href=""  data-bs-toggle="modal" 
+
+                            $view .='<td>'.'<a href=""  data-bs-toggle="modal"
                                 data-bs-target=".viewExperience-'.$s_detail->id.'" style="padding:2px; margin-left:3px; margin-top:6px; color:white"
                                 class="btn btn-xs btn-info btn-sm mr-1">
                                 View Experience
                                 </a>'.'</td>';
-        
+
                         $view .= '</tr>';
                         }
-                        $view .= '</tbody>';  
-                        $view .= '</table>';  
+                        $view .= '</tbody>';
+                        $view .= '</table>';
                     }
                     return $view;
-        
+
                 })
                 ->rawColumns(['booking_id','expense','selection_date','booking_info','payment_info','event_type','event_date','event_shift','event_time','package','package_name','assign','status','add_new','action','experience'])
                 ->make(true);
             }
             else{
                 $events = EventMaster::with('client')->orderByDesc('id')->select('*')->get();
-    
-                $count = 0; 
+
+                $count = 0;
             return DataTables::of($events)
             ->addIndexColumn()
             ->setRowId(function($event){return $event->id;})
@@ -735,15 +735,15 @@ class EventController extends Controller
                         </a>'.'</td>';
                     $view .= '</tr>';
                 }
-                $view .= '</tbody>';  
-                $view .= '</table>';  
+                $view .= '</tbody>';
+                $view .= '</table>';
                 // }
                 return $view;
-    
+
             })
             ->addColumn('event_type', function ($event) {
                 $details = EventDetails::where('master_id',$event->id)->get();
-                
+
                 // Render the nested table
                 $type_html = '<table class="table child-table">';
                 $type_html .= '<tbody>';
@@ -754,8 +754,8 @@ class EventController extends Controller
                 }
                     $type_html .= '</tbody>';
                     $type_html .= '</table>';
-    
-        
+
+
                 return $type_html;
             })
             ->addColumn('event_date',function($event){
@@ -770,7 +770,7 @@ class EventController extends Controller
                 }
                     $event_date .= '</tbody>';
                     $event_date .= '</table>';
-        
+
                 return $event_date;
             })
             ->addColumn('selection_date',function($event){
@@ -785,7 +785,7 @@ class EventController extends Controller
                 }
                     $selection_date .= '</tbody>';
                     $selection_date .= '</table>';
-        
+
                 return $selection_date;
             })
             ->addColumn('event_shift', function ($event) {
@@ -800,7 +800,7 @@ class EventController extends Controller
                 }
                     $event_shift .= '</tbody>';
                     $event_shift .= '</table>';
-        
+
                 return $event_shift;
             })
             ->addColumn('event_time', function ($event) {
@@ -816,7 +816,7 @@ class EventController extends Controller
                 }
                     $event_time .= '</tbody>';
                     $event_time .= '</table>';
-        
+
                 return $event_time;
             })
             ->addColumn('package', function ($event) {
@@ -831,7 +831,7 @@ class EventController extends Controller
                 }
                     $event_location .= '</tbody>';
                     $event_location .= '</table>';
-        
+
                 return $event_location;
             })
             ->addColumn('package_name', function ($event) {
@@ -846,12 +846,12 @@ class EventController extends Controller
                 }
                     $event_location .= '</tbody>';
                     $event_location .= '</table>';
-        
+
                 return $event_location;
             })
             ->addColumn('status', function($event) {
                     if (!check_access("event.status")) return '';
-                
+
                     $statusConfig = [
                         0 => ['color' => 'rgb(189 163 35)', 'label' => 'Pending'],
                         1 => ['color' => '#23bd5f', 'label' => 'Active'],
@@ -862,14 +862,14 @@ class EventController extends Controller
                         6 => ['color' => '#377c00', 'label' => 'Delivered'],
                         7 => ['color' => '#377c00', 'label' => 'Raw Delivered'],
                     ];
-                
+
                     $details = EventDetails::where('master_id', $event->id)->get();
-                    
+
                     $statusHtml = '<table class="table btn-table"><tbody>';
-                    
+
                     foreach ($details as $detail) {
                         if (!isset($statusConfig[$detail->status])) continue;
-                
+
                         $config = $statusConfig[$detail->status];
                         $statusHtml .= sprintf('
                             <tr>
@@ -884,9 +884,9 @@ class EventController extends Controller
                             $config['label']
                         );
                     }
-                    
+
                     $statusHtml .= '</tbody></table>';
-                    
+
                     return $statusHtml;
                 })
             ->addColumn('payment_info', function($event){
@@ -905,20 +905,20 @@ class EventController extends Controller
             ->addColumn('assign', function($event){
                 $buttons = '';
                 if (check_access("assign.photographer.other")) {
-                $buttons = '<a data-bs-toggle="modal" 
+                $buttons = '<a data-bs-toggle="modal"
                             data-bs-target=".photographer-'.$event->id.'"
                             style="background-color:#cd4715; color:white; border-radius:5px; margin-bottom:4px"
-                            class="btn btn-xs btn-sm mr-1">Photographer</a> 
+                            class="btn btn-xs btn-sm mr-1">Photographer</a>
                             <br>
-                            <a  data-bs-toggle="modal" 
+                            <a  data-bs-toggle="modal"
                             data-bs-target=".cinematographer-'.$event->id.'" style="background-color: #068b58; color:white; border-radius:5px;  margin-bottom:4px"
                             class="btn btn-xs btn-sm mr-1">Cinematographer</a>
                             <br>
-                            <a  data-bs-toggle="modal" 
+                            <a  data-bs-toggle="modal"
                             data-bs-target=".photoeditor-'.$event->id.'" style="background-color: #0c4aa3; color:white; border-radius:5px;  margin-bottom:4px"
                             class="btn btn-xs btn-sm mr-1">Photo Editor</a>
                             <br>
-                            <a  data-bs-toggle="modal" 
+                            <a  data-bs-toggle="modal"
                             data-bs-target=".cineeditor-'.$event->id.'" style="background-color: #830ca3; color:white; border-radius:5px;  margin-bottom:4px"
                             class="btn btn-xs btn-sm mr-1">Cine Editor</a>';
                 }
@@ -939,28 +939,28 @@ class EventController extends Controller
                 $invoice  = '';
                 $log = '';
                 if (check_access("event.list")) {
-                $view ='<a href=""  data-bs-toggle="modal" 
+                $view ='<a href=""  data-bs-toggle="modal"
                             data-bs-target=".view_modal-'.$event->id.'" style="padding:2px; margin-left:3px; color:white"
                             class="btn btn-xs btn-info btn-sm mr-1">
                             <svg  width="16" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </a>';
                 }
                 if (check_access("event.edit")) {
-    
+
                 $edit = '<a href="'.route('event.edit',$event->id).'" style="padding:2px;  margin-left:3px; "
                                 class="btn btn-xs btn-primary btn-sm mr-1">
                                 <svg width="16" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                             </a>';
                 }
                  if(auth()->user()->type == 'super_admin'||auth()->user()->type == 'admin'){
-                        $log = '<a   data-bs-toggle="modal" 
+                        $log = '<a   data-bs-toggle="modal"
                         data-bs-target=".activity_log-'.$event->id.'"  style="padding:2px;  margin-left:3px; color:white "
                         class="btn btn-xs btn-info btn-sm mr-1">
                         <i class="fa fa-file-medical"></i>
                         </a>';
                     }
                 // if (check_access("event.delete")) {
-    
+
                 // $delete = '<a href="'.route('delete.event',$event->id).'"
                 //             onclick="return confirm("Are you sure you want to delete?");"
                 //             style="padding: 2px; margin-left:3px;" class="delete btn btn-xs btn-danger btn-sm mr-1"><svg
@@ -976,9 +976,9 @@ class EventController extends Controller
                 //         </svg></a><br>
                 //             ';
                 // }
-                
+
                 if (check_access("event.delete")) {
-    
+
                 $delete = '<a onclick="deleteData(' .$event->id .')" data-id="' .$event->id .'"
                             style="padding: 2px; margin-left:3px;" class="delete btn btn-xs btn-danger btn-sm mr-1"><svg
                             width="16" height="14" viewBox="0 0 24 24" fill="none"
@@ -993,57 +993,57 @@ class EventController extends Controller
                         </svg></a><br>
                         ';
                 }
-                
+
                  if(auth()->user()->type == 'super_admin'||auth()->user()->type == 'admin'){
-                    //  if($event->master_status == 1){ 
+                    //  if($event->master_status == 1){
                         $invoice ='<a href="'.route('invoice',$event->id).'" style="padding:2px;  margin-left:3px; margin-top:10px; color:white"
                         class="btn btn-md btn-info btn-sm mr-1">
                         Send Invoice
-                        </a>';  
+                        </a>';
                     //  }
-                    
+
                 }
-    
+
                 return $view.$edit.$log.$delete.$invoice ;
-    
+
             })
             ->addColumn('experience',function($event){
                 $view = '';
                 $officeExperience = '';
-     
+
                 if (check_access("event.list")) {
                     $details = EventDetails::where('master_id',$event->id)->get();
                     $view = '<table class="table  child-table">';
                     $view .= '<tbody>';
                     foreach($details as $s_detail){
                         $view .= '<tr>';
-                        $view .='<td>'.'<a href=""  data-bs-toggle="modal" 
+                        $view .='<td>'.'<a href=""  data-bs-toggle="modal"
                             data-bs-target=".officeExperience-'.$s_detail->id.'" style="padding:2px; margin-left:3px; margin-top:6px; color:white"
                             class="btn btn-xs btn-primary btn-sm mr-1">
                             Share Experience
                             </a>'.'</td>';
-    
-                        $view .='<td>'.'<a href=""  data-bs-toggle="modal" 
+
+                        $view .='<td>'.'<a href=""  data-bs-toggle="modal"
                             data-bs-target=".viewExperience-'.$s_detail->id.'" style="padding:2px; margin-left:3px; margin-top:6px; color:white"
                             class="btn btn-xs btn-info btn-sm mr-1">
                             View Experience
                             </a>'.'</td>';
-    
+
                     $view .= '</tr>';
                     }
-                    $view .= '</tbody>';  
-                    $view .= '</table>';  
+                    $view .= '</tbody>';
+                    $view .= '</table>';
                 }
                 return $view;
-    
+
             })
             ->rawColumns(['booking_id','booking_info','expense','payment_info','event_type','event_date','event_shift','event_time','package','package_name','assign','status','add_new','action','selection_date','experience'])
             ->make(true);
             }
         }
-        
+
     }
-    
+
      public function experinceStore(Request $request){
         $validators = Validator::make($request->all(), [
             'artist_id' => 'required',
@@ -1065,8 +1065,8 @@ class EventController extends Controller
         OfficeExperience::create($data);
         // Toastr::success("Review Stored Successfully!");
         // return redirect()->back();
-        
-        return response()->json(['message' => 'Data Stored successfully']); 
+
+        return response()->json(['message' => 'Data Stored successfully']);
 
     }
 
@@ -1143,7 +1143,7 @@ class EventController extends Controller
         }
 
     }
-   
+
     public function addNewEvent($id){
         if (!check_access("event.create")) {
             Toastr::error("You don't have permission!");
@@ -1187,7 +1187,7 @@ class EventController extends Controller
         $event->update([
             'total_event'  => $totalEvent
         ]);
-       
+
         $previousPayment = PayMentModel::where('event_id',$event->id)->first();
         // dd($request->input('package_id'));
 
@@ -1221,14 +1221,14 @@ class EventController extends Controller
             'payment_amount' =>  $updateAmount,
             'due_amount'     =>  $updateDue
         ]);
-        
-       
+
+
 
         Toastr::success('New Event Added Successfully');
         return redirect()->route('event_info');
-        
+
     }
-    
+
     public function assignEvent(Request $request){
         // return $request->all();
         if (!check_access("assign.photographer.other")) {
@@ -1236,9 +1236,9 @@ class EventController extends Controller
             return redirect()->back();
         }
         $assignData = [];
-        $userStatus = $request->input('status'); 
-        $userData = $request->input('user'); 
-        $paymentData = $request->input('payment'); 
+        $userStatus = $request->input('status');
+        $userData = $request->input('user');
+        $paymentData = $request->input('payment');
         // dd( $paymentData);
        // Initialize an array to store total payment amounts for each user
         $totalPayment = [];
@@ -1267,17 +1267,17 @@ class EventController extends Controller
                     ];
                     $payment = EventwisePayment::create($paymentInsertData);
                     $totalPayment[$userId] = ($totalPayment[$userId] ?? 0) + $paymentData[$eventId][$photographerId];
-                  
+
                 }
 
             }
         }
-       
+
        EventDetailsLog::insert($assignData);
 
                return response()->json(['message' => 'Data Stored Successfully']);
 
-    
+
     }
     public function assignEventList(){
         if (!check_access("assignevent.list")) {
@@ -1300,7 +1300,7 @@ class EventController extends Controller
         compact('assignedPhotographer','assignedCinematographer',
         'assignedPhotoEditor','assignedCineEditor','users','id'));
     }
-    
+
     //  public function updateAssignEventData(Request $request, $id){
     //     $newPhotographer = $request->photographer?array_values($request->photographer):'';
     //     $oldPhotographer = $request->old_photographer?array_values($request->old_photographer):'';
@@ -1319,11 +1319,11 @@ class EventController extends Controller
     //                     'assigned_user_id' => $oldPhotographer[$i],
     //                     'event_details_id' => $id,
     //                 ]);
-        
+
     //             // Check if there's a new payment amount
     //             // dd(isset($photographerNewPayment[$i]));
     //                 if (isset($photographerNewPayment[$i])) {
-                        
+
     //                     // dd($photographerNewPayment[$i]);
     //                     EventwisePayment::where('user_id', $oldPhotographer[$i])
     //                         ->where('event_details_id', $id)
@@ -1338,18 +1338,18 @@ class EventController extends Controller
     //                             ->where('event_details_id', $id)
     //                             ->update([
     //                                 'payment_amount' => $photographerOldPayment[$i]
-    //                             ]);  
+    //                             ]);
     //                     }
-                          
-                        
+
+
     //                 }
     //             }
-    //         } 
+    //         }
     //     }
-        
+
     //     Toastr::success("Data Updated Successfully");
     //     return redirect()->back();
-        
+
     // }
       public function updateAssignEventData(Request $request, $id){
         $newPhotographer = $request->photographer?array_values($request->photographer):'';
@@ -1369,11 +1369,11 @@ class EventController extends Controller
                         'assigned_user_id' => $oldPhotographer[$i],
                         'event_details_id' => $id,
                     ]);
-        
+
                 // Check if there's a new payment amount
                 // dd(isset($photographerNewPayment[$i]));
                     if (isset($photographerNewPayment[$i])) {
-                        
+
                         // dd($photographerNewPayment[$i]);
                         EventwisePayment::where('user_id', $oldPhotographer[$i])
                             ->where('event_details_id', $id)
@@ -1388,18 +1388,18 @@ class EventController extends Controller
                                 ->where('event_details_id', $id)
                                 ->update([
                                     'payment_amount' => $photographerOldPayment[$i]
-                                ]);  
+                                ]);
                         }
-                          
-                        
+
+
                     }
                 // }
-            } 
+            }
         }
-        
+
         Toastr::success("Data Updated Successfully");
         return redirect()->back();
-        
+
     }
 
     public function userType(Request $request){
@@ -1418,9 +1418,9 @@ class EventController extends Controller
             $details_data = EventDetailsLog::where('id',$id)->first();
             // dd($details_data);
             $payment_data = EventwisePayment::where(['event_details_id'=>$details_data->event_details_id,'user_id'=>$details_data->assigned_user_id])->first();
-     
+
             if($payment_data){
-                $payment_data -> delete(); 
+                $payment_data -> delete();
             }
             $details_data->delete();
             // Toastr::success("Deleted Successfully!");
@@ -1430,7 +1430,7 @@ class EventController extends Controller
             return $e->getMessage();
         }
     }
-  
+
     public function editEvent(Request $requset, $id){
         if (!check_access("event.edit")) {
             Toastr::error("You don't have permission!");
@@ -1449,7 +1449,7 @@ class EventController extends Controller
         return view('BackEnd.webcontent.event.editEvent',compact('event','eventDetails','payment','users','package_type'
         ,'package_category','packages','shifts','types','districts'));
     }
- 
+
      public function updateEvent(Request $request, $id){
         // return $request->all();
         $eventMaster = EventMaster::find($id);
@@ -1535,7 +1535,7 @@ class EventController extends Controller
             if($eventDetail->add_ons !=  $request->add_ons[$eventId]){
                 $log .= "Previous Add Ons:". $eventDetail->add_ons."<br>Updated Add Ons:". $request->add_ons[$eventId].'<br>';
             }
-            
+
             EventDetails::where('master_id',$id)->where('id',$eventId)->update([
                 'type_id'        => $request->type[$eventId],
                 'shift_id'       => $request->shift[$eventId],
@@ -1590,7 +1590,7 @@ class EventController extends Controller
                     'payment_method'  => $request->payment_method[$i],
                     'transaction_id'  => $request->transaction_id[$i],
                 ]);
-                
+
                 $data['email'] = $eventMaster->client->email;
                 $data['booking_id'] = $eventMaster->booking_id;
                 $data['event'] = $eventMaster;
@@ -1608,7 +1608,7 @@ class EventController extends Controller
 
                 if($paymnetlog){
                     $log .= "Payment History ".$i.": '<br>'Amount : ".$paymnetlog->amount."'<br>'Date:".$paymnetlog->payment_date."'<br>'Method:".$paymnetlog->payment_method."'<br>'Transaction No /Bank :".$paymnetlog->transaction_id;
-                }  
+                }
             }
         }
 
@@ -1619,25 +1619,25 @@ class EventController extends Controller
                 'created_by' => auth()->user()->id,
             ]);
         }
-        
+
 
         Toastr::success('Event data Upadted Successfully');
         return redirect()->back();
-        
+
 
         // for ($i = 0; $i < $totalEvent; $i++) {
         //     $eventInfo = EventDetails::where('master_id',$id)->first();
         // }
     }
-    
+
     public function invoice($id){
         $data['event'] = EventMaster::find($id);
         $data["email"] = $data['event']->client->email;
         $data["title"] = "Client Invoice";
         $data['booking_id'] = $data['event']->booking_id;
-  
+
         $pdf = PDF::loadView('BackEnd.webcontent.event.invoice', $data);
-  
+
         Mail::send('invoice_message', $data, function($message)use($data, $pdf) {
             $message->to($data["email"], $data["email"])
                     ->subject($data["title"])
@@ -1681,7 +1681,7 @@ class EventController extends Controller
 
             if($request->status == 1){
                 $message = "Dear Sir Your Booking is confirmed Booking ID-". $event->event->booking_id .". You Book for ".$event->type->type_name.". Your Event Date is ".date('d/m/Y',strtotime($event->date)).".";
-                send_sms($client_phone_number,$message);
+                // send_sms($client_phone_number,$message);
                 $master = EventMaster::where('id',$event->master_id)->update([
                 "master_status" => 1
                 ]);
@@ -1689,41 +1689,41 @@ class EventController extends Controller
             if($request->status == 3){
                 $to = $event->event->client->email;
                 $subject = 'Raw Ready For Delivery';
-                $data = [ 
+                $data = [
                     'booking_id' => $event->event->booking_id,
                     'event_date' => $event->date,
                     'venue'      => $event->venue,
                 ];
 
-                Mail::send('raw_ready',$data, function ($message) use ($to, $subject) {
-                    $message->to($to)->subject($subject);
-                });
+                // Mail::send('raw_ready',$data, function ($message) use ($to, $subject) {
+                //     $message->to($to)->subject($subject);
+                // });
                 $message_body = "Your Booking ID-".$event->event->booking_id." And Event Date-".date('d/m/Y',strtotime($event->date))." Photos & Video is ready for delivery. Please Collect it from our office. ".
                             "Please bring Pendrive/Hard Drive. After getting all Raw Photos please select photos for Editing. ".
                             "For any other query Contact with us : +88 0177171 1590 or +88 0174222 5584";
-                send_sms($client_phone_number,$message_body);  
+                // send_sms($client_phone_number,$message_body);
             }
             if($request->status== 4){
                 $event->selection_date = date('d/m/Y');
                 $event->update();
                 $to = $event->event->client->email;
                 $subject = 'Selection Given';
-                $data = [ 
+                $data = [
                     'booking_id' => $event->event->booking_id,
                     'event_date' => $event->date,
                     'venue'      => $event->venue,
                     'delivery_date' =>$event->event->delivery_date
                 ];
 
-                Mail::send('selection_given',$data, function ($message) use ($to, $subject) {
-                    $message->to($to)->subject($subject);
-                });
+                // Mail::send('selection_given',$data, function ($message) use ($to, $subject) {
+                //     $message->to($to)->subject($subject);
+                // });
             }
 
             if($request->status== 5){
                 $to = $event->event->client->email;
                 $subject = 'Final Delivery';
-                $data = [ 
+                $data = [
                     'booking_id' => $event->event->booking_id,
                     'event_date' => $event->date,
                     'venue'      => $event->venue,
@@ -1732,16 +1732,16 @@ class EventController extends Controller
                 Mail::send('ready_for_delivery_mail',$data, function ($message) use ($to, $subject) {
                     $message->to($to)->subject($subject);
                 });
-                
+
                 $message_body ="Dear Sir,".
                             " Your Booking Id-".$event->event->booking_id." Event Date ". $event->date .", Event Venue  ".$event->venue ." Products are ready for delivery. Please Collect it from our office. For any other query Contact with us : +88 0177171 1590 or +88 0174222 5584";
-                send_sms($client_phone_number,$message_body); 
+                send_sms($client_phone_number,$message_body);
             }
-            
+
             if($request->status== 6){
                  $to = $event->event->client->email;
                  $subject = 'Delivered';
-                $data = [ 
+                $data = [
                     'booking_id' => $event->event->booking_id,
                     'event_date' => $event->date,
                     'venue'      => $event->venue,
@@ -1750,18 +1750,18 @@ class EventController extends Controller
                 Mail::send('delivered',$data, function ($message) use ($to, $subject) {
                     $message->to($to)->subject($subject);
                 });
-                
+
                 $master = EventMaster::where('id',$event->master_id)->update([
                     "master_status" => 2
                     ]);
-            
-                
+
+
             }
-            
+
                 if($request->status == 7){
                  $to = $event->event->client->email;
                  $subject = 'Raw Delivered';
-                $data = [ 
+                $data = [
                     'booking_id' => $event->event->booking_id,
                     'event_date' => $event->date,
                     'venue'      => $event->venue,
@@ -1770,7 +1770,7 @@ class EventController extends Controller
                 Mail::send('raw_delivered',$data, function ($message) use ($to, $subject) {
                     $message->to($to)->subject($subject);
                 });
-                
+
             }
             $event->update($status);
             // send_sms($client_phone_number,$message);
@@ -1797,7 +1797,7 @@ class EventController extends Controller
     //         return $e->getMessage();
     //     }
     // }
-    
+
       public function deleteMaster($id){
         try{
             if (!check_access("event.delete")) {
@@ -1873,7 +1873,7 @@ class EventController extends Controller
         ->addColumn('phone',function($client){
            $phone = '
                 <strong>Phone :</strong>' . $client->primary_no. ' <br>
-                <strong>Alternate No:</strong> '.$client->alternate_no.' <br>'; 
+                <strong>Alternate No:</strong> '.$client->alternate_no.' <br>';
 
            return  $phone ;
         })
@@ -1898,10 +1898,10 @@ class EventController extends Controller
 
         ->rawColumns(['name','email','address','phone','action'])
         ->make(true);
-        
+
     }
 
-   
+
 
     // public function getAssignedList(Request $request){
     //     if (!check_access("assignevent.list")) {
@@ -1910,8 +1910,8 @@ class EventController extends Controller
     //     }
     //      $fromDate = $request->input('from_date');
     //     $toDate = $request->input('to_date');
-    
-        
+
+
     // $query = EventDetailslog::query();
     // $query->join('event_details', 'event_details.id', '=', 'event_details_pivot.event_details_id');
     // if ($fromDate && $toDate) {
@@ -1924,7 +1924,7 @@ class EventController extends Controller
 
     // $assignedEventList = $query->get()->groupBy('event_details_id');
     // dd($assignedEventList);
-        
+
     //     return DataTables::of($assignedEventList)
     //     ->addIndexColumn()
     //     ->setRowAttr([
@@ -1940,7 +1940,7 @@ class EventController extends Controller
     //             <strong>Package Details:</strong>'. $ev_list->eventDetail->package->name .'<br>
     //         ';
     //         }
-           
+
     //         return  $event_info ;
     //     })
     //     ->addColumn('assigned_photographer',function($list){
@@ -1949,9 +1949,9 @@ class EventController extends Controller
     //             if($ev_list->status == 1){
     //                 $assigned_photographer[] = $ev_list->user->name  ;
     //                 // echo "\n";
-                    
+
     //             }
-               
+
     //         }
     //         $html = '<div>' . implode('<br>', $assigned_photographer) . '</div>';
     //         return  $html;
@@ -1975,7 +1975,7 @@ class EventController extends Controller
     //         }
     //         $html = '<div>' . implode('<br>', $assigned_photoeditor) . '</div>';
     //       return  $html ;
-          
+
     //     })
     //     ->addColumn('assigned_cineeditor',function($list){
     //         $assigned_cineeditor = [];
@@ -1988,7 +1988,7 @@ class EventController extends Controller
 
     //         $html = '<div>' . implode('<br>', $assigned_cineeditor) . '</div>';
     //       return  $html ;
-          
+
     //     })
     //     ->addColumn('action', function ($list) {
     //         foreach($list as $n_list){
@@ -2011,8 +2011,8 @@ class EventController extends Controller
     //             <line x1="14" y1="11" x2="14" y2="17"></line>
     //         </svg></a>';
     //         }
-            
-           
+
+
 
     //         return  $edit.$delete ;
     //     })
@@ -2020,18 +2020,18 @@ class EventController extends Controller
     //     ->rawColumns(['event_info','assigned_photographer','assigned_cinematographer','assigned_photoeditor','assigned_cineeditor','action'])
     //     ->make(true);
     // }
-    
-    
+
+
     public function getAssignedList(Request $request){
         if (!check_access("assignevent.list")) {
             Toastr::error("You don't have permission!");
             return redirect()->route('admin.index');
         }
-        
+
         $fromDate = $request->input('from_date');
         $toDate = $request->input('to_date');
-    
-        
+
+
     $query = EventDetailslog::query();
     $query->join('event_details', 'event_details.id', '=', 'event_details_pivot.event_details_id');
     $query->join('event_masters', 'event_details.master_id', '=', 'event_masters.id');
@@ -2062,7 +2062,7 @@ class EventController extends Controller
                 <strong>Package Details:</strong>'. $ev_list->eventDetail->package->name .'<br>
             ';
             }
-           
+
             return  $event_info ;
         })
         ->addColumn('assigned_photographer',function($list){
@@ -2095,7 +2095,7 @@ class EventController extends Controller
             }
             $html = '<div>' . implode('<br>', $assigned_photoeditor) . '</div>';
           return  $html ;
-          
+
         })
         ->addColumn('assigned_cineeditor',function($list){
             $assigned_cineeditor = [];
@@ -2108,7 +2108,7 @@ class EventController extends Controller
 
             $html = '<div>' . implode('<br>', $assigned_cineeditor) . '</div>';
           return  $html ;
-          
+
         })
         ->addColumn('action', function ($list) {
             foreach($list as $n_list){
@@ -2131,8 +2131,8 @@ class EventController extends Controller
                 <line x1="14" y1="11" x2="14" y2="17"></line>
             </svg></a>';
             }
-            
-           
+
+
 
             return  $edit.$delete ;
         })
@@ -2141,5 +2141,5 @@ class EventController extends Controller
         ->make(true);
     }
 
-   
+
 }

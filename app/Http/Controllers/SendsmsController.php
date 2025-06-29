@@ -22,7 +22,7 @@ class SendsmsController extends Controller
             'message' => $message,
         ]);
 
-        send_sms($mobile_no,$message);
+        // send_sms($mobile_no,$message);
         Toastr::success('Message Send Successfully');
         return redirect()->back();
     }
@@ -61,7 +61,7 @@ class SendsmsController extends Controller
         })
         ->rawColumns(['phone', 'message','action'])
         ->make(true);
-           
+
     }
 
     public function delete($id){

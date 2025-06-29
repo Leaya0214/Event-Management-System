@@ -49,7 +49,7 @@ class BookingController extends Controller
             if($lastBooking){
                 $booking_id = "BRHE-". $date. ($lastBooking->id + 1);
             }
-            
+
             $event_data = [
                 'client_id' => $client_id,
                 'booking_id' =>$booking_id ,
@@ -90,14 +90,14 @@ class BookingController extends Controller
                 'invoice' => 'INV 2024' . $event->id,
                 'currency' => 'Tk'
             ];
-            
+
              $message_body = "Dear Sir, Your Booking is confirmed. Booking ID - " . $event->booking_id . ". You have booked the following events:\n";
 
                 foreach($detail_array as $detail) {
                     $message_body .= "- " . $detail->type->type_name . ", Event Date: " . date('d/m/Y', strtotime($detail->date)) . "\n";
                 }
             $message_body .= "Thank you!";
-            send_sms($request->primary_no,$message_body);  
+            // send_sms($request->primary_no,$message_body);
 
 
             $payment = PayMentModel::create($payment_data);
@@ -109,7 +109,7 @@ class BookingController extends Controller
                 'payment_method' =>  $request->payment_method,
                 'transaction_id' =>$request->transaction_id ? $request->transaction_id : $request->account_number,
             ];
-            
+
             $log = Paymentlog::create($payment_log);
 
             $data['email'] = $request->email;
@@ -125,7 +125,7 @@ class BookingController extends Controller
                 $message->to($data["email"], $data["email"])
                         ->subject($data["title"])
                         ->attachData($pdf->output(),"payslip.pdf");
-            });        
+            });
             Toastr::success('Successfully Added');
             return redirect()->back();
         } catch (\Exception $e) {
@@ -135,7 +135,7 @@ class BookingController extends Controller
     }
 
     public function filterPackage(Request $request)
-    {   
+    {
         $district_id = $request->district;
         $category_id = $request->category_id;
         if($district_id == 2){

@@ -53,12 +53,11 @@ if (!function_exists('check_access')) {
                 }
 
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . '293|THuqaSVsnPSwRM0Gk4WlfsTtU1msIC1cMRv17a2C',
-                ])->post("https://login.esms.com.bd/api/v3/sms/send", [
+                    'Authorization' => 'Bearer ' . '',
+                ])->post("", [
                     'recipient' => $msisdn,
-                    'sender_id' => "8809601001288",
+                    'sender_id' => "",
                     'type' => "plain",
-                    // 'schedule_time' => $schedule_time,
                     'message' => $message,
                 ]);
                  return $response;
